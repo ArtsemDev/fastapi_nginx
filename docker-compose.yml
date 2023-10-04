@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: "fastapi-web"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    command: "uvicorn app:app --host 0.0.0.0"
+    restart: always
+
+  nginx:
+    container_name: "fastapi-nginx"
+    image: nginx:1.25-alpine3.17-slim
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+      - ./log:/var/log/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    restart: always
